@@ -3,8 +3,7 @@ import {body, check, param, validationResult, ValidationError} from "express-val
 import {authMiddleware} from "../middlewares/authMiddleWare";
 import {bloggerInputValidatorMiddleware, postInputValidatorMiddleware} from "../middlewares/validatorMiddleware";
 import {bloggersService} from "../domains/bloggersService";
-import {bloggersRepo} from "../repos/bloggersRepo";
-import {postsRepo} from "../repos/postsRepo";
+import {postsService} from "../domains/postsService";
 
 
 export const bloggersRouter = express.Router()
@@ -68,10 +67,6 @@ bloggersRouter.put('/:id',
         }
     })
 
-
-
-
-
 bloggersRouter.delete('/:id',
     authMiddleware,
     async (req: Request, res: Response) => {
@@ -83,26 +78,19 @@ bloggersRouter.delete('/:id',
         }
     })
 
-
-
-
-
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
-
     const pageNumber = req.query.PageNumber;
-    const foundBlogger = await bloggersRepo.findBloggerById(req.params.bloggerId)
+    const foundBlogger = await bloggersService.getBloggerById(req.params.bloggerId)
     if (foundBlogger) {
-        const foundSpecificPosts = await postsRepo.getPostsFromBlogger(Number(req.params.bloggerId ), Number(pageNumber), Number(req.query.PageSize))
-
-        res.status(200).send(foundSpecificPosts)
+        const foundSpecificPosts = await postsService.getAll(Number(pageNumber), Number(req.query.PageSize), req.params.bloggerId)
+        return res.status(200).send(foundSpecificPosts)
     } else
-        res.sendStatus(404)
+        return res.sendStatus(404)
 })
 
 bloggersRouter.post('/:bloggerId/posts',
     authMiddleware,
     postInputValidatorMiddleware,
-
     async (req: Request, res: Response) => {
         const errors = validationResult(req)
         let myErrors = []
@@ -115,13 +103,12 @@ bloggersRouter.post('/:bloggerId/posts',
                 "resultCode": 1
             })
         } else {
-            const foundBlogger = await bloggersRepo.findBloggerById(req.params.bloggerId)
+            const foundBlogger = await bloggersService.getBloggerById(req.params.bloggerId)
             if (!foundBlogger){
                 res.sendStatus(404)
             } else {
-                const newPost = await postsRepo.createPost(req.body.title, req.body.shortDescription, req.body.content, +req.params.bloggerId)
+                const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.params.bloggerId)
                 res.status(201).send(newPost)
             }
         }
-
     })

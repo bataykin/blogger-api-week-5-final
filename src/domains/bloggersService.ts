@@ -1,10 +1,8 @@
 import { bloggersRepo } from "../repos/bloggersRepo";
-import {bloggersCollection} from "../repos/db";
 
 export const bloggersService = {
 
-    async getAll(SearchNameTerm: Nullable<string>, PageNumber:Nullable<number>, PageSize: Nullable<number>): Promise<{}> {
-
+    async getAll(SearchNameTerm: Nullable<string>, PageNumber:Nullable<number>, PageSize: Nullable<number>) {
         let searchNameTerm = String(SearchNameTerm).trim();
         const pageNumber = Number(PageNumber) || 1;
         const pageSize = Number(PageSize) || 10;
@@ -17,7 +15,6 @@ export const bloggersService = {
         if (pageNumber > 1) {
             skipSize = pageSize * (pageNumber - 1)
         }
-
         const filteredAndPaginated = await bloggersRepo.searchNameByTerm (searchNameTerm,skipSize, pageSize)
         const result = {
                 "pagesCount": Math.ceil(Object.keys(filteredAndPaginated).length / pageSize),
@@ -26,7 +23,6 @@ export const bloggersService = {
                 "totalCount": Object.keys(filteredAndPaginated).length,
                 "items": filteredAndPaginated
             }
-
         return  result
     },
 
@@ -39,9 +35,8 @@ export const bloggersService = {
     },
 
     async createBlogger (name: string, youtubeUrl: string) {
-        // const newBlogger = bloggersRepo.createBlogger(name, youtubeUrl)
         const newBlogger = {
-            id: Math.random()  + "",
+            id: Math.random()*1000000  + "",
             name: name,
             youtubeUrl: youtubeUrl
         }
@@ -60,8 +55,6 @@ export const bloggersService = {
             return true
         }
         return false
-    }
-
-
+    },
 
 }

@@ -1,5 +1,4 @@
 import {bloggersCollection} from "./db";
-import {BloggerDBType} from "./types";
 
 export const bloggersRepo = {
 
@@ -44,7 +43,6 @@ export const bloggersRepo = {
         }
         return false
 
-
     },
     async findBloggerNameById(bloggerId: number) {
         const bloggerNameById = await bloggersCollection.findOne({id: bloggerId}, {name: 1, _id: 0})
@@ -53,7 +51,6 @@ export const bloggersRepo = {
         }
 
             return false
-
-    }
+    },
 
 }
