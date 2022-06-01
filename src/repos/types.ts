@@ -13,3 +13,18 @@ export type PostDBType = WithId<{
     bloggerId: number
     bloggerName: string
 }>
+
+
+export type UserDBType = {
+    id: string
+    login: string
+    passwordHash: string
+    createdAt: Date
+}
+
+export type FeedbackDBType = WithId<{
+    adminId: ObjectId
+    adminName: string
+    comment: string
+    createdAt: Date
+}>

@@ -1,4 +1,5 @@
 import { bloggersRepo } from "../repos/bloggersRepo";
+import {Nullable} from "../types/global";
 
 export const bloggersService = {
 
@@ -27,7 +28,7 @@ export const bloggersService = {
     },
 
     async getBloggerById(bloggerId: string) {
-        const blogger = bloggersRepo.findBloggerById(bloggerId)
+        const blogger = await bloggersRepo.findBloggerById(bloggerId)
         if (!blogger) {
             return false
         }

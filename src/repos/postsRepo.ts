@@ -19,29 +19,6 @@ export const postsRepo = {
         return await postsCollection.findOne({"_id": createdPost.insertedId}, {projection: {_id: 0}})
     },
 
-    async getPostsFromBlogger(bloggerId: number , PageNumber: number | null | undefined, PageSize: number | null | undefined) {
-        let skipSize = 0
-        if ((!PageNumber) || (typeof PageNumber !== "number")) {
-            PageNumber = 1
-        }
-        if ((!PageSize) || (typeof PageSize !== "number")) {
-            PageSize = 10
-        }
-        // if ((typeof PageSize === "number") && (typeof PageNumber === "number") && (PageNumber > 0)) {
-        if (PageNumber > 1) {
-            skipSize = PageSize * (PageNumber - 1)
-        }
-        // }
-            return {
-                "pagesCount": Math.ceil(await postsCollection.find({bloggerId: bloggerId}).count()/Number(PageSize)),
-                "page": PageNumber,
-                "pageSize": PageSize,
-                "totalCount": await postsCollection.find({bloggerId: bloggerId}).count(),
-                "items":
-                    await postsCollection.find({bloggerId: bloggerId}).project({ _id: 0}).skip(skipSize).limit(PageSize).toArray()
-            }
-    },
-
     async findPostById(postId: string) {
         const post = await postsCollection.findOne({id: postId}, {projection: {_id: 0}})
         if (!post) {

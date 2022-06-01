@@ -3,7 +3,7 @@ import {body} from "express-validator";
 
 export const postInputValidatorMiddleware =
     // here we make validation. Also here we can transform returned object (for example to satisfy the Swagger API)
-   [ body('title')
+    [body('title')
         .exists().withMessage("field title not exists").bail()
         .isString().withMessage("not a string value").bail()
         .trim("").notEmpty().withMessage("empty string").bail()
@@ -18,23 +18,31 @@ export const postInputValidatorMiddleware =
             .isString().withMessage("not a string value").bail()
             .trim("").notEmpty().withMessage("empty string").bail()
             .isLength({max: 1000}).withMessage("more than 1000 symbols")]
-        // body('bloggerId')
-        //     .exists().withMessage("field bloggerId not exists").bail()
-        //     .isNumeric().withMessage("not a numeric value").bail()]
-
-
+// body('bloggerId')
+//     .exists().withMessage("field bloggerId not exists").bail()
+//     .isNumeric().withMessage("not a numeric value").bail()]
 
 
 export const bloggerInputValidatorMiddleware =
- [       body('name')
-    .exists().withMessage("field not exists").bail()
-    .isString().withMessage("not a string value").bail()
-    .trim("").notEmpty().withMessage("empty string").bail()
-    .isLength({max: 15}).withMessage("more than 15 symbols"),
-    body('youtubeUrl')
+    [body('name')
         .exists().withMessage("field not exists").bail()
         .isString().withMessage("not a string value").bail()
         .trim("").notEmpty().withMessage("empty string").bail()
-        .isLength({max: 100}).withMessage("more than 100 symbols").bail()
-        .matches(RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'))
-        .withMessage("not URL value")]
+        .isLength({max: 15}).withMessage("more than 15 symbols"),
+        body('youtubeUrl')
+            .exists().withMessage("field not exists").bail()
+            .isString().withMessage("not a string value").bail()
+            .trim("").notEmpty().withMessage("empty string").bail()
+            .isLength({max: 100}).withMessage("more than 100 symbols").bail()
+            .matches(RegExp('^https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$'))
+            .withMessage("not URL value")]
+
+export const loginValidatorMiddleware =
+        [body('login')
+            .exists().withMessage("field not exists").bail()
+            .isString().withMessage("not a string value").bail()
+            .trim("").notEmpty().withMessage("empty string").bail(),
+        body('password')
+            .exists().withMessage("field not exists").bail()
+            .isString().withMessage("not a string value").bail()
+            .trim("").notEmpty().withMessage("empty string").bail()]

@@ -2,6 +2,7 @@ import {bloggersRepo} from "../repos/bloggersRepo";
 import {postsRepo} from "../repos/postsRepo";
 import {postsCollection} from "../repos/db";
 import {bloggersService} from "./bloggersService";
+import {Nullable} from "../types/global";
 
 export const postsService = {
 

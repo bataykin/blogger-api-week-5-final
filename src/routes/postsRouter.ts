@@ -7,6 +7,8 @@ import {bloggersCollection} from "../repos/db";
 import {bloggersRouter} from "./bloggersRouter";
 import {postsService} from "../domains/postsService";
 import {bloggersService} from "../domains/bloggersService";
+import {commentsService} from "../domains/commentsService";
+import {Nullable} from "../types/global";
 
 export const postsRouter = express.Router()
 
@@ -66,7 +68,7 @@ postsRouter.put('/:id',
                 errorsMessages: myErrors,
                 "resultCode": 1
             });
-        }  else {
+        } else {
             const isUpdated = await postsService.updatePostById(req.params.id, req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
             if (isUpdated) {
                 return res.sendStatus(204)
@@ -79,10 +81,34 @@ postsRouter.put('/:id',
 postsRouter.delete('/:id',
     authMiddleware,
     async (req: Request, res: Response) => {
-    const isDeleted = await postsService.deletePostById(req.params.id)
+        const isDeleted = await postsService.deletePostById(req.params.id)
         if (isDeleted) {
             res.sendStatus(204)
         } else {
             res.sendStatus(404)
         }
     })
+
+//RETURN COMMENTS FOR SPECIFIC POST
+postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
+    const postId = String(req.query.postId)
+    const PageNumber: Nullable<number> = Number(req.query.PageNumber);
+    const PageSize: Nullable<number> = Number(req.query.PageSize);
+    const comments = await commentsService.getCommentsByPostId(postId, PageNumber, PageSize)
+    if (comments) {
+        res.status(200).send(comments)
+    } else {
+        res.status(404)
+    }
+})
+//CREATE COMMENT UNDER POSTID
+postsRouter.post("/:postId/comments", async (req: Request, res: Response) => {
+    const postId = String(req.params.postId)
+    const comment = commentsService.createComment(postId, req.body.content)
+    if (comment) {
+        return res.status(201).send(comment)
+    } else {
+        return res.status(404)
+    }
+
+})
